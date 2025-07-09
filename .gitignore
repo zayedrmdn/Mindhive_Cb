@@ -2,5 +2,3 @@ venv/
 .env
 __pycache__/
 *.pyc
-data/faiss_index.idx
-data/outlets.db
