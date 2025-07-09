@@ -1,52 +1,45 @@
 # app/products_api.py
+import os, json
 from fastapi import APIRouter, Query, HTTPException
-import json
-import numpy as np
-from sentence_transformers import SentenceTransformer
+from huggingface_hub import InferenceClient
+
 
 router = APIRouter(tags=["products"])
 
-# Paths and embedding model
-MAP_PATH  = "data/product_map.json"
-EMB_MODEL = "all-MiniLM-L6-v2"
-
-# Preload your product docs and embedder (these are lightweight enough)
-with open(MAP_PATH, "r", encoding="utf-8") as f:
+# Load product docs once
+with open("data/product_map.json", "r", encoding="utf-8") as f:
     docs = json.load(f)
-embedder = SentenceTransformer(EMB_MODEL)
+
+HF_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+if not HF_TOKEN:
+    raise RuntimeError("Missing HUGGINGFACEHUB_API_TOKEN")
+
+client   = InferenceClient(provider="hf-inference", api_key=HF_TOKEN)
+MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
 
 @router.get("/products")
 def read_products(
     query: str = Query(..., description="Search query"),
     top_k: int = Query(3, ge=1, le=10)
 ):
-    """
-    FAISS index is loaded on-demand inside this function to avoid
-    eating RAM at startup on low-memory environments.
-    """
+    # Build document corpus
+    texts = [f"{d['title']}. {d['description']}" for d in docs]
+
     try:
-        import faiss  # delay FAISS import until endpoint is hit
-        INDEX_PATH = "data/faiss_index.idx"
-        index = faiss.read_index(INDEX_PATH)
+        # Two positional args: source_sentence, other_sentences
+        scores = client.sentence_similarity(query, texts, model=MODEL_ID)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading vector index: {e}")
+        raise HTTPException(status_code=500,
+                            detail=f"Hugging Face similarity API error: {e}")
 
-    # Embed the incoming query
-    q_emb = embedder.encode([query], convert_to_numpy=True)
-
-    # Run the similarity search
-    D, I = index.search(q_emb, top_k)
-
-    # Build results
-    results = []
-    for idx in I[0]:
-        if idx < 0 or idx >= len(docs):
-            continue
-        d = docs[idx]
-        results.append({
-            "id":          d["id"],
-            "title":       d["title"],
-            "description": d["description"]
-        })
-
+    # Pair scores with docs, sort, and return top_k
+    ranked = sorted(zip(scores, docs), key=lambda x: x[0], reverse=True)[:top_k]
+    results = [
+        {
+            "id": doc["id"],
+            "title": doc["title"],
+            "description": doc["description"],
+            "score": float(score)
+        } for score, doc in ranked
+    ]
     return {"products": results}
