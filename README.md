@@ -183,7 +183,7 @@ All five parts have passing test scripts located in `/test/`.
 ## ✅ Submission Checklist
 
 * [x] GitHub repo: [github.com/zayedrmdn/Mindhive\_Cb](https://github.com/zayedrmdn/Mindhive_Cb)
-* [x] Hosted demo (Render/Railway/Vercel): *To be added*
+* [x] Hosted demo (Render/Railway/Vercel): *https://mindhivecb.onrender.com/*
 * [x] README with full setup, architecture, and documentation
 * [x] Test coverage for happy/unhappy paths
 * [x] API documentation and endpoint examples
