@@ -175,7 +175,7 @@ All five parts have passing test scripts located in `/test/`.
 ## 📸 Screenshots & Flow Diagrams
 
 * `docs/flowchart-mindhivecb.png` (Flowchart)
-![Chatbot Flowchart](docs/flowchart-mindhivecb.png)
+![Chatbot Flowchart](docs/Flowchart - MindhiveCb.png)
 
 ---
 
