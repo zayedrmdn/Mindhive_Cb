@@ -174,9 +174,8 @@ All five parts have passing test scripts located in `/test/`.
 
 ## 📸 Screenshots & Flow Diagrams
 
-* `docs/flowchart.png` (LangChain logic)
-* `docs/demo.gif` (Optional chatbot interaction clip)
-* `/docs/openapi_snapshot.json` (Optional export of OpenAPI schema)
+* `docs/flowchart-mindhivecb.png` (Flowchart)
+![Chatbot Flowchart](docs/flowchart-mindhivecb.png)
 
 ---
 
