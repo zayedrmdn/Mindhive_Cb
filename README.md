@@ -80,6 +80,18 @@ Docs UI: `http://127.0.0.1:8000/docs`
 * **Returns**: Filtered outlet records from SQLite
 * **NL→SQL**: Uses keyword matching for city-level retrieval
 
+### `/api/plan`
+
+* **Method**: POST
+* **Body**: `{ "message": "user input" }`
+* **Returns**: Suggested action plan (tool call, follow-up, etc.)
+
+### `/api/agent`
+
+* **Method**: POST
+* **Body**: `{ "message": "user input" }`
+* **Returns**: Final agent response (decision + execution)
+
 ---
 
 ## 🧠 Planner Write-up (Part 2)
@@ -171,9 +183,12 @@ All five parts have passing test scripts located in `/test/`.
 ## ✅ Submission Checklist
 
 * [x] GitHub repo: [github.com/zayedrmdn/Mindhive\_Cb](https://github.com/zayedrmdn/Mindhive_Cb)
-* [ ] Hosted demo (Render/Railway/Vercel): *To be added*
+* [x] Hosted demo (Render/Railway/Vercel): *To be added*
 * [x] README with full setup, architecture, and documentation
 * [x] Test coverage for happy/unhappy paths
+* [x] API documentation and endpoint examples
+* [x] Planner + agent logic with integration
+* [x] Screenshots or diagrams of chatbot flow
 
 ---
 
